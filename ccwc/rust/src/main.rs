@@ -16,11 +16,11 @@ struct CliArgs {
     file_path: Option<PathBuf>,
 }
 
-fn count_bytes(content: &[u8]) -> Result<usize, std::io::Error> {
-    return Ok(content.len());
+fn count_bytes(content: &[u8]) -> usize {
+    content.len()
 }
 
-fn count_lines(content: &mut String) -> Result<usize, std::io::Error> {
+fn count_lines(content: &mut String) -> usize {
     let mut lines = 0;
 
     for symbol in content.chars() {
@@ -28,10 +28,10 @@ fn count_lines(content: &mut String) -> Result<usize, std::io::Error> {
             lines += 1;
         }
     }
-    return Ok(lines);
+    lines
 }
 
-fn count_words(content: &mut String) -> Result<usize, std::io::Error> {
+fn count_words(content: &mut String) -> usize {
     let mut words = 0;
     let mut word_start = false;
 
@@ -44,12 +44,11 @@ fn count_words(content: &mut String) -> Result<usize, std::io::Error> {
             word_start = false;
         }
     }
-    return Ok(words);
+    words
 }
 
-fn count_characters(content: &mut String) -> Result<usize, std::io::Error> {
-    let characters = content.chars().count();
-    return Ok(characters);
+fn count_characters(content: &mut String) -> usize {
+    content.chars().count()
 }
 
 fn main() -> Result<(), std::io::Error> {
@@ -63,24 +62,28 @@ fn main() -> Result<(), std::io::Error> {
     input_src.read_to_string(&mut content)?;
 
     let result = match true {
-        _ if args.count_bytes => count_bytes(content.as_bytes())?.to_string(),
-        _ if args.count_lines => count_lines(&mut content)?.to_string(),
-        _ if args.count_words => count_words(&mut content)?.to_string(),
-        _ if args.count_characters => count_characters(&mut content)?.to_string(),
+        _ if args.count_bytes => count_bytes(content.as_bytes()).to_string(),
+        _ if args.count_lines => count_lines(&mut content).to_string(),
+        _ if args.count_words => count_words(&mut content).to_string(),
+        _ if args.count_characters => count_characters(&mut content).to_string(),
         _ => {
             format!(
                 "{} {} {} {}",
-                count_bytes(content.as_bytes())?,
-                count_lines(&mut content)?,
-                count_words(&mut content)?,
-                count_characters(&mut content)?,
+                count_bytes(content.as_bytes()),
+                count_lines(&mut content),
+                count_words(&mut content),
+                count_characters(&mut content),
             )
         }
     };
 
     let formatted_result = match args.file_path.is_none() {
         true => format!("{}\n", result),
-        false => format!("{} {:?}\n", result, args.file_path.unwrap()),
+        false => format!(
+            "{} {}\n",
+            result.to_string(),
+            args.file_path.unwrap().to_string_lossy()
+        ),
     };
 
     io::stdout().write_all(formatted_result.as_bytes())?;
