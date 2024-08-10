@@ -53,15 +53,6 @@ func (f *file) printStats(output io.Writer) {
 	fmt.Fprintf(output, "%s", strings.Join(result, " "))
 }
 
-func (f *file) closeSource() {
-	if f.source.fileName != "" {
-		file, ok := f.source.reader.(*os.File)
-		if ok {
-			file.Close()
-		}
-	}
-}
-
 type stats struct {
 	bytes        int
 	lines        int
