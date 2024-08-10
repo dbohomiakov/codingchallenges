@@ -117,17 +117,16 @@ func isEndOfLine(symbol string) int {
 	return 0
 }
 
-func isEndOfWord(symbol string, isWordStarted bool) (int, bool) {
-	var isWordEnd int
-	var inWord bool
+func isEndOfWord(symbol string, inWord bool) (int, bool) {
+	var wordEnded int
 
 	if !isASCIIWhitespace(symbol) {
-		isWordEnd, inWord = 0, true
+		wordEnded, inWord = 0, true
 	}
-	if isASCIIWhitespace(symbol) && isWordStarted {
-		isWordEnd, inWord = 1, false
+	if isASCIIWhitespace(symbol) && inWord {
+		wordEnded, inWord = 1, false
 	}
-	return isWordEnd, inWord
+	return wordEnded, inWord
 }
 
 func isASCIIWhitespace(symbol string) bool {
